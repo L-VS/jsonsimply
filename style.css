@@ -1,0 +1,122 @@
+/* Reset de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Fond général */
+body {
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  background: linear-gradient(to right, #f4f4f9, #ffffff);
+  color: #333;
+  padding: 30px;
+  line-height: 1.6;
+}
+
+/* Titres */
+h1, h2, h3 {
+  color: #5e3ec9;
+  margin-bottom: 20px;
+}
+
+/* Formulaire */
+form {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Labels */
+label {
+  display: block;
+  margin-top: 20px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Inputs & Textareas */
+input, textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-top: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus, textarea:focus {
+  border-color: #7A42F4;
+  box-shadow: 0 0 8px rgba(122, 66, 244, 0.3);
+  outline: none;
+}
+
+/* Boutons */
+button {
+  margin-top: 25px;
+  padding: 12px 20px;
+  background: #7A42F4;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background: #5e3ec9;
+  transform: translateY(-2px);
+}
+
+/* Liens d'action */
+.link-output {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.link-output a {
+  color: #7A42F4;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: color 0.3s;
+}
+
+.link-output a:hover {
+  color: #5e3ec9;
+}
+
+/* Copie bouton vert */
+.copy-btn {
+  margin-left: 10px;
+  background: #4CAF50;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.copy-btn:hover {
+  background: #3e9241;
+  transform: translateY(-2px);
+}
+
+/* Bloc JSON résultat */
+pre {
+  background: #f6f6f6;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+  font-size: 14px;
+  color: #444;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  body { padding: 15px; }
+  form { padding: 20px; }
+  input, textarea { font-size: 14px; }
+}
