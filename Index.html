@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Générateur JSON + Lien AltStore PAL + Hébergement</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    h1 { color: #7A42F4; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 15px; padding: 10px 20px; background: #7A42F4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #5a32c4; }
+    pre { background: #efefef; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    .link-output { margin-top: 15px; }
+    .copy-btn { margin-left: 10px; background: #4CAF50; }
+  </style>
+</head>
+<body>
+
+<h1>Générateur JSON + Lien AltStore PAL</h1>
+
+<form id="jsonForm">
+  <!-- Champs de l'app -->
+  <label>Nom de l'app</label>
+  <input type="text" id="appName" value="Null's Brawl">
+
+  <label>Identifiant du bundle</label>
+  <input type="text" id="bundleId" value="com.lvs.nullsbrawl">
+
+  <label>Développeur</label>
+  <input type="text" id="developer" value="L-VS, Null's Team">
+
+  <label>Sous-titre</label>
+  <input type="text" id="subtitle" value="Jouez à Null's Brawl facilement">
+
+  <label>Version</label>
+  <input type="text" id="version" value="56.268.2">
+
+  <label>Date de version</label>
+  <input type="date" id="versionDate" value="2024-10-10">
+
+  <label>URL de téléchargement</label>
+  <input type="url" id="downloadURL" value="https://www.dropbox.com/scl/fi/2u4vqk6sm3dktyk5kw5p5/Nulls_Brawl_61.249_null_brawl.org.ipa?rlkey=10qkjy40sws9ql5kldvxa5kzn&st=hscckvf5&dl=1">
+
+  <label>Description</label>
+  <textarea id="description">Version iOS de Null's Brawl, installable via AltStore PAL.</textarea>
+
+  <label>URL de l'icône</label>
+  <input type="url" id="iconURL" value="https://l-vs.github.io/nullsbrawl-repo/Icon.png">
+
+  <label>Couleur principale (hex)</label>
+  <input type="text" id="tintColor" value="#7A42F4">
+
+  <label>URL des screenshots (séparés par des virgules)</label>
+  <textarea id="screenshots">https://l-vs.github.io/nullsbrawl-repo/pr1.png, https://l-vs.github.io/nullsbrawl-repo/pr2.png</textarea>
+
+  <label>ID Marketplace</label>
+  <input type="text" id="marketplaceID" value="1234567890">
+
+  <button type="button" onclick="generateJSON()">Générer JSON</button>
+</form>
+
+<h2>Résultat JSON</h2>
+<pre id="output"></pre>
+
+<div class="link-output">
+  <a id="downloadLink" href="#" download="app.json">📥 Télécharger JSON</a> |
+  <a id="viewLink" href="#" target="_blank">🔍 Voir JSON</a>
+</div>
+
+<hr>
+
+<h2>Mode Lien Hébergé</h2>
+<label>Colle ici l'URL publique de ton JSON hébergé (GitHub Pages, Dropbox direct, etc.) :</label>
+<input type="url" id="hostedURL" placeholder="https://tonsite.github.io/repository.json" oninput="updateHostedLink()">
+
+<div class="link-output">
+  <h3>Lien d’installation AltStore PAL (hébergé) :</h3>
+  <input type="text" id="altstoreHostedLink" readonly style="width: 80%;">
+  <button class="copy-btn" onclick="copyAltstoreLink()">Copier</button>
+</div>
+
+<script>
+  let generatedBlobURL = '';
+
+  function generateJSON() {
+    const appName = document.getElementById('appName').value;
+    const bundleId = document.getElementById('bundleId').value;
+    const developer = document.getElementById('developer').value;
+    const subtitle = document.getElementById('subtitle').value;
+    const version = document.getElementById('version').value;
+    const versionDate = document.getElementById('versionDate').value;
+    const downloadURL = document.getElementById('downloadURL').value;
+    const description = document.getElementById('description').value;
+    const iconURL = document.getElementById('iconURL').value;
+    const tintColor = document.getElementById('tintColor').value;
+    const screenshots = document.getElementById('screenshots').value.split(',').map(s => s.trim());
+    const marketplaceID = document.getElementById('marketplaceID').value;
+
+    const jsonData = {
+      name: appName,
+      identifier: bundleId,
+      sourceURL: "https://tonsite.github.io/repository.json",
+      apps: [
+        {
+          name: appName,
+          bundleIdentifier: bundleId,
+          developerName: developer,
+          subtitle: subtitle,
+          version: version,
+          versionDate: versionDate + "T00:00:00Z",
+          downloadURL: downloadURL,
+          localizedDescription: description,
+          iconURL: iconURL,
+          tintColor: tintColor,
+          screenshotURLs: screenshots,
+          size: 0,
+          marketplaceID: marketplaceID
+        }
+      ]
+    };
+
+    const jsonStr = JSON.stringify(jsonData, null, 2);
+    document.getElementById('output').textContent = jsonStr;
+
+    // Crée Blob URL
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    generatedBlobURL = URL.createObjectURL(blob);
+
+    document.getElementById('downloadLink').href = generatedBlobURL;
+    document.getElementById('viewLink').href = generatedBlobURL;
+
+    // Met à jour lien hébergé si présent
+    updateHostedLink();
+  }
+
+  function updateHostedLink() {
+    const hostedURL = document.getElementById('hostedURL').value.trim();
+    const altstoreLinkField = document.getElementById('altstoreHostedLink');
+    if (hostedURL) {
+      const altstoreURL = `altstore://install?url=${encodeURIComponent(hostedURL)}`;
+      altstoreLinkField.value = altstoreURL;
+    } else {
+      altstoreLinkField.value = '';
+    }
+  }
+
+  function copyAltstoreLink() {
+    const altstoreLinkField = document.getElementById('altstoreHostedLink');
+    altstoreLinkField.select();
+    document.execCommand('copy');
+    alert('Lien AltStore copié dans le presse-papiers !');
+  }
+</script>
+
+</body>
+</html>
